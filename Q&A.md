@@ -96,3 +96,20 @@ From the cert-manager docs — after installing cert-manager, the next step they
 
 For cert-manager specifically: cert-manager.io/docs
 As you do this more, you'll recognize the pattern. Most tools follow: install → configure → expose
+
+## Is certificates.yaml the best approach?
+
+Easier to manage when you have multiple services, and keeps the IngressRoute files focused on routing only.
+
+## Why do I need to add argocd.localhost to /etc/hosts?
+
+.localhost subdomains like argocd.localhost aren't automatically resolved to 127.0.0.1 by the OS — only the exact localhost is. The browser was handling the resolution differently (some browsers do resolve *.localhost to 127.0.0.1 automatically), but curl and the OS don't. So you need the /etc/hosts entry for curl and potentially for the browser too.
+
+## What is the cert-manager workflow?
+
+1. You create a Certificate resource (in certificates.yaml) — this is just a request saying "I need a TLS cert for argocd.localhost"
+2. cert-manager sees that request and uses the ClusterIssuer to generate a certificate
+3. cert-manager stores the result (certificate + private key) in a Kubernetes Secret (e.g. argocd-tls)
+4. Traefik reads that Secret via the tls.secretName in the IngressRoute and uses it to serve HTTPS
+
+So cert-manager is the middleman between "I want a cert" and "here's the cert in a Secret". Without it you'd have to manually generate certificates and create the Secrets yourself.
