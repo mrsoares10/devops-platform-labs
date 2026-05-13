@@ -14,6 +14,11 @@ spec:
         server:
           dev:
             enabled: true
+  ignoreDifferences:
+    - group: admissionregistration.k8s.io
+      kind: MutatingWebhookConfiguration
+      jsonPointers:
+        - /webhooks/0/clientConfig/caBundle
   destination:
     server: https://kubernetes.default.svc
     namespace: vault
