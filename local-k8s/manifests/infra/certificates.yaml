@@ -23,3 +23,16 @@ spec:
     kind: ClusterIssuer
   dnsNames:
     - dashboard.localhost
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: vault-tls
+  namespace: vault
+spec:
+  secretName: vault-tls
+  issuerRef:
+    name: selfsigned
+    kind: ClusterIssuer
+  dnsNames:
+    - vault.localhost

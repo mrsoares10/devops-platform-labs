@@ -6,7 +6,7 @@ A personal learning and portfolio project covering platform engineering end-to-e
 
 ##  Local Kubernetes Platform
 
-A GitOps platform running on Minikube where GitHub Actions builds and publishes container images, ArgoCD automatically deploys them, Traefik handles ingress with TLS, Vault manages secrets, and the LGTM stack provides full observability.
+A GitOps platform running on Minikube where GitHub Actions builds and publishes container images, ArgoCD automatically deploys them, Traefik handles ingress with TLS, Vault manages secrets, and the PLG stack provides full observability.
 
 ### Stack
 
@@ -17,8 +17,8 @@ A GitOps platform running on Minikube where GitHub Actions builds and publishes 
 | GitOps        | ArgoCD                                               |
 | CI/CD         | GitHub Actions, GitHub Container Registry (GHCR)     |
 | Security      | Vault, Trivy                                         |
-| Observability | OpenTelemetry Collector, Loki, Tempo, Mimir, Grafana |
-| App           | Small HTTP API instrumented with OpenTelemetry       |
+| Observability | OpenTelemetry Collector, Prometheus, Loki, Grafana   |
+| App           | Small HTTP API                                       |
 
 ### Phases
 
@@ -47,7 +47,8 @@ A GitOps platform running on Minikube where GitHub Actions builds and publishes 
 
 **Phase 6 — Observability**
 - OpenTelemetry Collector as the central signal hub
-- Loki for logs, Tempo for traces, Mimir for metrics
+- Prometheus for metrics scraping and storage
+- Loki for log aggregation
 - Grafana dashboards wiring it all together
 
 ### Directory Layout
@@ -57,12 +58,10 @@ local-k8s/
 ├── app/                    # webapp source + Dockerfile
 ├── charts/                 # Helm values overrides
 │   ├── traefik/
-│   ├── argocd/
-│   ├── vault/
-│   └── lgtm/
-├── manifests/              # ArgoCD Application CRDs + app manifests
-│   ├── apps/
-│   └── infra/
+│   └── argocd/
+├── manifests/
+│   ├── apps/               # ArgoCD Application CRDs (cert-manager, vault, loki, prometheus, grafana, app)
+│   └── infra/              # raw manifests applied with kubectl (IngressRoutes, Certificates, ClusterIssuer)
 └── scripts/                # bootstrap (minikube start, helm installs)
 ```
 
