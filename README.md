@@ -10,15 +10,15 @@ A GitOps platform running on Minikube where GitHub Actions builds and publishes 
 
 ### Stack
 
-| Category      | Tools                                                |
-|---------------|------------------------------------------------------|
-| Cluster       | Minikube                                             |
-| Ingress + TLS | Traefik, cert-manager                                |
-| GitOps        | ArgoCD                                               |
-| CI/CD         | GitHub Actions, GitHub Container Registry (GHCR)     |
-| Security      | Vault, Trivy                                         |
-| Observability | OpenTelemetry Collector, Prometheus, Loki, Grafana   |
-| App           | Small HTTP API                                       |
+| Category      | Tools                                                      |
+|---------------|------------------------------------------------------------|
+| Cluster       | Minikube                                                   |
+| Ingress + TLS | Traefik, cert-manager                                      |
+| GitOps        | ArgoCD                                                     |
+| CI/CD         | GitHub Actions, GitHub Container Registry (GHCR)           |
+| Security      | Vault, Trivy                                               |
+| Observability | OpenTelemetry Collector, Prometheus, Loki, Grafana         |
+| App           | Tamagotchi REST API (Python/Flask), packaged as Helm chart |
 
 ### Phases
 
@@ -28,9 +28,9 @@ A GitOps platform running on Minikube where GitHub Actions builds and publishes 
 - ArgoCD exposed through Traefik
 
 **Phase 2 — The App**
-- Small Go or Python HTTP API with `/healthz` and a few routes
-- Generates logs, traces, and metrics at different levels
-- Dockerfile + Kubernetes manifests (Deployment, Service, IngressRoute)
+- Tamagotchi REST API in Python/Flask with `/healthz`, `/status`, `/feed`, `/play`, `/sleep`, `/metrics`
+- Exposes Prometheus metrics (hunger, happiness, energy gauges)
+- Packaged as a Helm chart, deployed via ArgoCD
 
 **Phase 3 — GitOps with ArgoCD**
 - ArgoCD watches `local-k8s/manifests/` for changes
@@ -55,14 +55,23 @@ A GitOps platform running on Minikube where GitHub Actions builds and publishes 
 
 ```
 local-k8s/
-├── app/                    # webapp source + Dockerfile
-├── charts/                 # Helm values overrides
+├── charts/                 # Helm values overrides for bootstrap tools
 │   ├── traefik/
 │   └── argocd/
 ├── manifests/
-│   ├── apps/               # ArgoCD Application CRDs (cert-manager, vault, loki, prometheus, grafana, app)
+│   ├── apps/               # ArgoCD Application CRDs (cert-manager, vault, loki, prometheus, grafana, tamagotchi)
 │   └── infra/              # raw manifests applied with kubectl (IngressRoutes, Certificates, ClusterIssuer)
 └── scripts/                # bootstrap (minikube start, helm installs)
+
+app/
+├── app.py                  # Tamagotchi Flask API
+├── requirements.txt
+├── Dockerfile
+├── run.sh                  # local dev runner
+└── chart/                  # Helm chart for Kubernetes deployment
+    ├── Chart.yaml
+    ├── values.yaml
+    └── templates/
 ```
 
 ---
