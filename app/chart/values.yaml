@@ -1,6 +1,6 @@
 image:
   repository: ghcr.io/mrsoares10/tamagotchi
-  tag: 2548347485e160f5d06b6ba213579b9248744973
+  tag: 88ac3e0aa5eb601ae34e7850a9f07141f5440a7d
   pullPolicy: Always
 
 service:
