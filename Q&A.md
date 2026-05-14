@@ -138,3 +138,22 @@ Promtail — specifically collects logs from Kubernetes pod stdout/stderr and sh
 OTel Collector — collects logs, metrics, and traces from multiple sources and can forward to multiple backends (Loki, Prometheus, Tempo, etc.)
 
 OTel Collector is more powerful and flexible — it's the better choice for your stack since you already have it in the plan. With OTel Collector you can skip Promtail entirely and have one agent handling everything.
+
+
+## How does the OTel Collector get logs from Kubernetes pods?
+
+The collector runs as a DaemonSet (one pod per node) and reads log files directly from the node's filesystem via a hostPath volume mount at `/var/log/pods`. On Minikube with Docker, those files are symlinks pointing to `/var/lib/docker/containers`, so that path also needs to be mounted.
+
+Key lessons from getting this working:
+- The collector needs `runAsUser: 0` (root) to read the log files
+- Both `/var/log/pods` and `/var/lib/docker/containers` must be mounted as hostPath volumes
+- `start_at: end` is needed to avoid sending old logs that Loki will reject as "too far behind"
+- Loki requires `auth_enabled: false` or an `X-Scope-OrgID` header — without it, queries return empty results even when logs are ingested
+- The OTLP exporter appends `/v1/logs` automatically, so the endpoint should be `http://loki:3100/otlp`, not `http://loki:3100/otlp/v1/logs`
+- Logs are queryable in Grafana using `{k8s_namespace_name="<namespace>"}` as the label filter
+
+## Why is the Grafana Loki datasource returning no results even when logs are ingested?
+
+Two possible causes:
+1. **Wrong time range** — Grafana defaults to a wide time range; change to "Last 15 minutes" to see recent logs
+2. **Missing tenant header** — if Loki uses `auth_enabled: false`, it still stores logs under tenant `fake` internally. Add `X-Scope-OrgID: fake` as an HTTP header in the Loki datasource settings in Grafana
