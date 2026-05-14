@@ -15,7 +15,7 @@ A simple REST API that simulates a Tamagotchi. Stats decay over time and can be 
 
 ## Running locally
 
-```bash
+``` bash
 ./run.sh
 ```
 
