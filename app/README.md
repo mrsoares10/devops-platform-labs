@@ -21,4 +21,4 @@ A simple REST API that simulates a Tamagotchi. Stats decay over time and can be 
 
 ## Stats
 
-Each stat ranges from 0 to 100 and decays by 5 every 30 seconds.
+Each stat ranges from 0 to 100 and decays by 5 every 300 seconds.
