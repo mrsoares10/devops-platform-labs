@@ -13,6 +13,14 @@ spec:
       values: |
         image:
           repository: otel/opentelemetry-collector-contrib
+        extraVolumes:
+          - name: varlogpods
+            hostPath:
+              path: /var/log/pods
+        extraVolumeMounts:
+          - name: varlogpods
+            mountPath: /var/log/pods
+            readOnly: true
         mode: daemonset
         config:
           receivers:
