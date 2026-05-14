@@ -88,14 +88,6 @@ Infrastructure-as-code for an OpenShift cluster on a cloud provider, using GitHu
 | IaC      | Terraform                     |
 | CI/CD    | GitHub Actions                |
 
-### Why GitHub Actions instead of Atlantis
-
-Atlantis and GitHub Actions solve the same problem (Terraform GitOps), but Atlantis requires a self-hosted server. Since GitHub Actions is already in the stack, it handles `terraform plan` on PRs and `terraform apply` on merge with no extra infrastructure.
-
-### Why not ArgoCD
-
-ArgoCD syncs Kubernetes manifests into a running cluster. Terraform provisions the cluster itself — it runs before and outside the cluster, talking to cloud APIs. They operate at different layers and are not interchangeable here.
-
 ### Directory Layout
 
 ```
