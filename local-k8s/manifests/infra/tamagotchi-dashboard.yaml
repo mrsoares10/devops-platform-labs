@@ -1,0 +1,135 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: tamagotchi-dashboard
+  namespace: monitoring
+  labels:
+    grafana_dashboard: "1"
+data:
+  tamagotchi.json: |
+    {
+      "title": "Tamagotchi",
+      "uid": "tamagotchi",
+      "schemaVersion": 38,
+      "refresh": "10s",
+      "time": { "from": "now-1h", "to": "now" },
+      "panels": [
+        {
+          "id": 1,
+          "title": "Hunger",
+          "type": "gauge",
+          "gridPos": { "x": 0, "y": 0, "w": 8, "h": 8 },
+          "options": {
+            "minVizWidth": 75,
+            "reduceOptions": { "calcs": ["lastNotNull"] },
+            "showThresholdLabels": false,
+            "showThresholdMarkers": true
+          },
+          "fieldConfig": {
+            "defaults": {
+              "min": 0,
+              "max": 100,
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  { "color": "red", "value": null },
+                  { "color": "yellow", "value": 30 },
+                  { "color": "green", "value": 60 }
+                ]
+              }
+            }
+          },
+          "targets": [
+            {
+              "expr": "tamagotchi_hunger",
+              "legendFormat": "Hunger"
+            }
+          ],
+          "datasource": { "type": "prometheus" }
+        },
+        {
+          "id": 2,
+          "title": "Happiness",
+          "type": "gauge",
+          "gridPos": { "x": 8, "y": 0, "w": 8, "h": 8 },
+          "options": {
+            "minVizWidth": 75,
+            "reduceOptions": { "calcs": ["lastNotNull"] },
+            "showThresholdLabels": false,
+            "showThresholdMarkers": true
+          },
+          "fieldConfig": {
+            "defaults": {
+              "min": 0,
+              "max": 100,
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  { "color": "red", "value": null },
+                  { "color": "yellow", "value": 30 },
+                  { "color": "green", "value": 60 }
+                ]
+              }
+            }
+          },
+          "targets": [
+            {
+              "expr": "tamagotchi_happiness",
+              "legendFormat": "Happiness"
+            }
+          ],
+          "datasource": { "type": "prometheus" }
+        },
+        {
+          "id": 3,
+          "title": "Energy",
+          "type": "gauge",
+          "gridPos": { "x": 16, "y": 0, "w": 8, "h": 8 },
+          "options": {
+            "minVizWidth": 75,
+            "reduceOptions": { "calcs": ["lastNotNull"] },
+            "showThresholdLabels": false,
+            "showThresholdMarkers": true
+          },
+          "fieldConfig": {
+            "defaults": {
+              "min": 0,
+              "max": 100,
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  { "color": "red", "value": null },
+                  { "color": "yellow", "value": 30 },
+                  { "color": "green", "value": 60 }
+                ]
+              }
+            }
+          },
+          "targets": [
+            {
+              "expr": "tamagotchi_energy",
+              "legendFormat": "Energy"
+            }
+          ],
+          "datasource": { "type": "prometheus" }
+        },
+        {
+          "id": 4,
+          "title": "Stats over time",
+          "type": "timeseries",
+          "gridPos": { "x": 0, "y": 8, "w": 24, "h": 8 },
+          "fieldConfig": {
+            "defaults": {
+              "min": 0,
+              "max": 100
+            }
+          },
+          "targets": [
+            { "expr": "tamagotchi_hunger", "legendFormat": "Hunger", "datasource": { "type": "prometheus" } },
+            { "expr": "tamagotchi_happiness", "legendFormat": "Happiness", "datasource": { "type": "prometheus" } },
+            { "expr": "tamagotchi_energy", "legendFormat": "Energy", "datasource": { "type": "prometheus" } }
+          ],
+          "datasource": { "type": "prometheus" }
+        }
+      ]
+    }
