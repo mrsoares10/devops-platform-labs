@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tamagotchi
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: tamagotchi
+  template:
+    metadata:
+      labels:
+        app: tamagotchi
+    spec:
+      containers:
+        - name: tamagotchi
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - containerPort: 5000
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 5000
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: 5000

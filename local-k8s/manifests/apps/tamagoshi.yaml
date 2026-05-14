@@ -1,0 +1,20 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: tamagotchi
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/mrsoares10/devops-platform-labs
+    path: app/chart
+    targetRevision: main
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: tamagotchi
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true

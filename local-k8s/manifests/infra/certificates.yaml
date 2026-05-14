@@ -36,3 +36,16 @@ spec:
     kind: ClusterIssuer
   dnsNames:
     - vault.localhost
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: tamagotchi-tls
+  namespace: tamagotchi
+spec:
+  secretName: tamagotchi-tls
+  issuerRef:
+    name: selfsigned
+    kind: ClusterIssuer
+  dnsNames:
+    - tamagotchi.localhost
