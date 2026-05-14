@@ -6,7 +6,7 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://github.com/<your-username>/devops-platform-labs
+    repoURL: https://github.com/mrsoares10/devops-platform-labs
     path: local-k8s/manifests/apps
     targetRevision: main
   destination:
