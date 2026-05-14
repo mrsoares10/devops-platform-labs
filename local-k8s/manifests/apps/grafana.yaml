@@ -22,6 +22,21 @@ spec:
             enabled: true
             label: grafana_dashboard
             labelValue: "1"
+        datasources:
+          datasources.yaml:
+            apiVersion: 1
+            datasources:
+              - name: Prometheus
+                type: prometheus
+                url: http://prometheus-server.monitoring.svc.cluster.local
+                isDefault: true
+              - name: Loki
+                type: loki
+                url: http://loki.monitoring.svc.cluster.local:3100
+                jsonData:
+                  httpHeaderName1: X-Scope-OrgID
+                secureJsonData:
+                  httpHeaderValue1: fake
 
   destination:
     server: https://kubernetes.default.svc
