@@ -33,7 +33,7 @@ spec:
             batch: {}
           exporters:
             otlphttp/loki:
-              endpoint: http://loki.monitoring.svc.cluster.local:3100/otlp
+              endpoint: http://loki.monitoring.svc.cluster.local:3100/otlp/v1/logs
             prometheus:
               endpoint: 0.0.0.0:8889
           service:

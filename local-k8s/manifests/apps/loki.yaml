@@ -13,6 +13,10 @@ spec:
       values: |
         deploymentMode: SingleBinary
         loki:
+          limits_config:
+            allow_structured_metadata: true
+          server:
+            http_listen_port: 3100
           auth_enabled: false
           commonConfig:
             replication_factor: 1
