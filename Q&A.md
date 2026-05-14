@@ -113,3 +113,28 @@ Easier to manage when you have multiple services, and keeps the IngressRoute fil
 4. Traefik reads that Secret via the tls.secretName in the IngressRoute and uses it to serve HTTPS
 
 So cert-manager is the middleman between "I want a cert" and "here's the cert in a Secret". Without it you'd have to manually generate certificates and create the Secrets yourself.
+
+## What is that Loki multi tenancy?
+
+Multi-tenancy means multiple organizations/tenants can use the same Loki instance with their data isolated from each other. Each tenant has an ID (the X-Scope-OrgID header).
+
+For a single-user local lab you don't need it — auth_enabled: false disables it so Loki accepts requests without a tenant ID. That's the simpler approach for your setup.
+
+## Do I need the Loki gateway?
+
+No — you disabled it with gateway: enabled: false. Without the gateway, you access Loki directly via the singleBinary service. Keep it disabled.
+
+## So now that I created the generic kubernetes secret for admin user in grafana, I need to create a grafana folder in charts with values?
+
+No — Grafana is deployed by ArgoCD, not by manual helm install. The values go directly in the ArgoCD Application manifest (grafana.yaml) just like you did for Loki and Prometheus.
+
+The charts/ folder is only for Traefik and ArgoCD which are bootstrapped manually.
+
+## About promtail, is it the same as otel collector?
+
+Similar purpose but different scope:
+
+Promtail — specifically collects logs from Kubernetes pod stdout/stderr and ships them to Loki. Log-only.
+OTel Collector — collects logs, metrics, and traces from multiple sources and can forward to multiple backends (Loki, Prometheus, Tempo, etc.)
+
+OTel Collector is more powerful and flexible — it's the better choice for your stack since you already have it in the plan. With OTel Collector you can skip Promtail entirely and have one agent handling everything.
