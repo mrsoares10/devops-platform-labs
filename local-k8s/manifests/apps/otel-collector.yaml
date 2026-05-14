@@ -11,17 +11,27 @@ spec:
     targetRevision: 0.154.0
     helm:
       values: |
+        mode: daemonset
         image:
           repository: otel/opentelemetry-collector-contrib
+        securityContext:
+          runAsUser: 0
+          runAsGroup: 0
+          privileged: true
         extraVolumes:
           - name: varlogpods
             hostPath:
               path: /var/log/pods
+          - name: varlibdocker
+            hostPath:
+              path: /var/lib/docker/containers
         extraVolumeMounts:
           - name: varlogpods
             mountPath: /var/log/pods
             readOnly: true
-        mode: daemonset
+          - name: varlibdocker
+            mountPath: /var/lib/docker/containers
+            readOnly: true
         config:
           receivers:
             otlp:
@@ -34,17 +44,21 @@ spec:
               include:
                 - /var/log/pods/*/*/*.log
               include_file_path: true
-              operators:
-                - type: container
-                  id: container-parser
-          processors:
-            batch: {}
+              start_at: end
           exporters:
             otlphttp/loki:
-              endpoint: http://loki.monitoring.svc.cluster.local:3100/otlp/v1/logs
+              endpoint: http://loki.monitoring.svc.cluster.local:3100/otlp
             prometheus:
               endpoint: 0.0.0.0:8889
+          processors:
+            batch:
+              send_batch_size: 100
+              send_batch_max_size: 200
+              timeout: 5s
           service:
+            telemetry:
+              logs:
+                level: debug
             pipelines:
               logs:
                 receivers: [filelog]
