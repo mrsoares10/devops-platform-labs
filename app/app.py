@@ -54,7 +54,7 @@ def metrics():
 
 def decay():
     while True:
-        time.sleep(30)
+        time.sleep(300)
         state["hunger"] = max(0, state["hunger"] - 5)
         state["happiness"] = max(0, state["happiness"] - 5)
         state["energy"] = max(0, state["energy"] - 5)
