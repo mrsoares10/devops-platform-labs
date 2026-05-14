@@ -6,9 +6,11 @@ on:
       - main
     paths:
       - 'app/**'
+      - '!app/chart/values.yaml'
 
 jobs:
   build:
+    if: "!contains(github.event.head_commit.message, 'Update image tag')"
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -36,3 +38,12 @@ jobs:
           image-ref: ghcr.io/${{ github.repository_owner }}/tamagotchi:${{ github.sha }}
           exit-code: '1'
           severity: CRITICAL
+
+      - name: Update image tag
+        run: |
+          sed -i "s/tag:.*/tag: ${{ github.sha }}/" app/chart/values.yaml
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          git add app/chart/values.yaml
+          git commit -m "Update image tag to ${{ github.sha }}"
+          git push
